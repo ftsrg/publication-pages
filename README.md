@@ -1,4 +1,1 @@
-# publication-pages
-Github repository for publication pages
-
-## Go to [wiki](https://github.com/FTSRG/publication-pages/wiki)
+# [FTSRG Publication pages](https://github.com/FTSRG/publication-pages/wiki)
