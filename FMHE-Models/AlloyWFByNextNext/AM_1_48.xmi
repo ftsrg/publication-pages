@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="ASCII"?>
+<hu.bme.mit.inf.yakindumm:Statechart xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:hu.bme.mit.inf.yakindumm="hu.bme.mit.inf.yakindumm">
+  <regions>
+    <vertices xsi:type="hu.bme.mit.inf.yakindumm:State"/>
+    <vertices xsi:type="hu.bme.mit.inf.yakindumm:State"/>
+    <vertices xsi:type="hu.bme.mit.inf.yakindumm:Exit"/>
+    <vertices xsi:type="hu.bme.mit.inf.yakindumm:State"/>
+    <vertices xsi:type="hu.bme.mit.inf.yakindumm:State"/>
+    <vertices xsi:type="hu.bme.mit.inf.yakindumm:State"/>
+    <vertices xsi:type="hu.bme.mit.inf.yakindumm:State"/>
+    <vertices xsi:type="hu.bme.mit.inf.yakindumm:State"/>
+    <vertices xsi:type="hu.bme.mit.inf.yakindumm:State"/>
+    <vertices xsi:type="hu.bme.mit.inf.yakindumm:State"/>
+    <vertices xsi:type="hu.bme.mit.inf.yakindumm:State"/>
+    <vertices xsi:type="hu.bme.mit.inf.yakindumm:State"/>
+    <vertices xsi:type="hu.bme.mit.inf.yakindumm:Exit"/>
+    <vertices xsi:type="hu.bme.mit.inf.yakindumm:State"/>
+    <vertices xsi:type="hu.bme.mit.inf.yakindumm:State"/>
+    <vertices xsi:type="hu.bme.mit.inf.yakindumm:State"/>
+    <vertices xsi:type="hu.bme.mit.inf.yakindumm:State"/>
+    <vertices xsi:type="hu.bme.mit.inf.yakindumm:State"/>
+    <vertices xsi:type="hu.bme.mit.inf.yakindumm:State"/>
+    <vertices xsi:type="hu.bme.mit.inf.yakindumm:State"/>
+    <vertices xsi:type="hu.bme.mit.inf.yakindumm:Exit"/>
+    <vertices xsi:type="hu.bme.mit.inf.yakindumm:State"/>
+    <vertices xsi:type="hu.bme.mit.inf.yakindumm:State">
+      <outgoingTransitions target="//@regions.0/@vertices.29"/>
+    </vertices>
+    <vertices xsi:type="hu.bme.mit.inf.yakindumm:Entry">
+      <outgoingTransitions target="//@regions.0/@vertices.35"/>
+    </vertices>
+    <vertices xsi:type="hu.bme.mit.inf.yakindumm:State"/>
+    <vertices xsi:type="hu.bme.mit.inf.yakindumm:State"/>
+    <vertices xsi:type="hu.bme.mit.inf.yakindumm:State"/>
+    <vertices xsi:type="hu.bme.mit.inf.yakindumm:State"/>
+    <vertices xsi:type="hu.bme.mit.inf.yakindumm:State"/>
+    <vertices xsi:type="hu.bme.mit.inf.yakindumm:State" incomingTransitions="//@regions.0/@vertices.29/@outgoingTransitions.0 //@regions.0/@vertices.29/@outgoingTransitions.1 //@regions.0/@vertices.22/@outgoingTransitions.0 //@regions.0/@vertices.29/@outgoingTransitions.2 //@regions.0/@vertices.29/@outgoingTransitions.3">
+      <outgoingTransitions target="//@regions.0/@vertices.29"/>
+      <outgoingTransitions target="//@regions.0/@vertices.29"/>
+      <outgoingTransitions target="//@regions.0/@vertices.29"/>
+      <outgoingTransitions target="//@regions.0/@vertices.29"/>
+    </vertices>
+    <vertices xsi:type="hu.bme.mit.inf.yakindumm:State"/>
+    <vertices xsi:type="hu.bme.mit.inf.yakindumm:State"/>
+    <vertices xsi:type="hu.bme.mit.inf.yakindumm:State"/>
+    <vertices xsi:type="hu.bme.mit.inf.yakindumm:State"/>
+    <vertices xsi:type="hu.bme.mit.inf.yakindumm:State"/>
+    <vertices xsi:type="hu.bme.mit.inf.yakindumm:State" incomingTransitions="//@regions.0/@vertices.23/@outgoingTransitions.0"/>
+    <vertices xsi:type="hu.bme.mit.inf.yakindumm:State"/>
+    <vertices xsi:type="hu.bme.mit.inf.yakindumm:State"/>
+    <vertices xsi:type="hu.bme.mit.inf.yakindumm:State"/>
+    <vertices xsi:type="hu.bme.mit.inf.yakindumm:State"/>
+    <vertices xsi:type="hu.bme.mit.inf.yakindumm:State"/>
+    <vertices xsi:type="hu.bme.mit.inf.yakindumm:State"/>
+  </regions>
+</hu.bme.mit.inf.yakindumm:Statechart>

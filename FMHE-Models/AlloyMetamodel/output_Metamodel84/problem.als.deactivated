@@ -1,0 +1,161 @@
+one sig util'language {
+	util'root : one type'class'Pseudostate + (type'class'FinalState + (type'class'Choice + (type'class'Statechart + (type'class'Transition + (type'class'Vertex + (type'class'Exit + (type'class'Region + (type'class'Entry + (type'class'State + (type'class'RegularState + type'class'CompositeElement)))))))))),
+	util'contains : (type'class'Pseudostate + (type'class'FinalState + (type'class'Choice + (type'class'Statechart + (type'class'Transition + (type'class'Vertex + (type'class'Exit + (type'class'Region + (type'class'Entry + (type'class'State + (type'class'RegularState + type'class'CompositeElement))))))))))) lone->set (type'class'Pseudostate + (type'class'FinalState + (type'class'Choice + (type'class'Statechart + (type'class'Transition + (type'class'Vertex + (type'class'Exit + (type'class'Region + (type'class'Entry + (type'class'State + (type'class'RegularState + type'class'CompositeElement)))))))))))
+}
+abstract sig util'Object {
+}
+sig type'class'Pseudostate in type'class'Vertex {
+}
+sig type'class'Vertex in util'Object {
+	inreference'incomingTransitions'Vertex : set type'class'Transition,
+	inreference'outgoingTransitions'Vertex : set type'class'Transition
+}
+sig type'class'Region in util'Object {
+	inreference'vertices'Region : set type'class'Vertex
+}
+sig type'class'Transition in util'Object {
+	inreference'target'Transition : one type'class'Vertex,
+	inreference'source'Transition : lone type'class'Vertex
+}
+sig type'class'Statechart in type'class'CompositeElement {
+}
+sig type'class'Entry in type'class'Pseudostate {
+}
+sig type'class'State in type'class'RegularState + type'class'CompositeElement + type'UndefinedPartOf'class'CompositeElement {
+}
+sig type'class'RegularState in type'class'Vertex {
+}
+sig type'class'CompositeElement in util'Object {
+	inreference'regions'CompositeElement : set type'class'Region
+}
+sig type'class'Choice in type'class'Pseudostate {
+}
+sig type'class'Exit in type'class'Pseudostate {
+}
+sig type'class'FinalState in type'class'RegularState {
+}
+sig type'DefinedPartOf'class'Statechart in type'class'Statechart + type'DefinedPartOf'class'CompositeElement {
+}
+sig type'UndefinedPartOf'class'Statechart in type'class'Statechart + type'UndefinedPartOf'class'CompositeElement {
+}
+sig type'DefinedPartOf'class'CompositeElement in type'class'CompositeElement {
+}
+sig type'UndefinedPartOf'class'CompositeElement in type'class'CompositeElement {
+}
+one sig element'DefinedElement'1 in type'DefinedPartOf'class'CompositeElement {
+}
+fact typedefinition'DefinedPartOf'class'Statechart {
+	type'DefinedPartOf'class'Statechart = element'DefinedElement'1
+}
+fact typedefinition'DefinedPartOf'class'CompositeElement {
+	type'DefinedPartOf'class'CompositeElement = element'DefinedElement'1
+}
+fact abstract'class'State {
+	type'class'State = type'class'RegularState & (type'class'CompositeElement & type'UndefinedPartOf'class'CompositeElement)
+}
+fact abstract'DefinedPartOf'class'Statechart {
+	type'DefinedPartOf'class'Statechart = type'class'Statechart & type'DefinedPartOf'class'CompositeElement
+}
+fact abstract'UndefinedPartOf'class'Statechart {
+	type'UndefinedPartOf'class'Statechart = type'class'Statechart & type'UndefinedPartOf'class'CompositeElement
+}
+fact abstract'class'Pseudostate {
+	type'class'Pseudostate = type'class'Entry + (type'class'Choice + type'class'Exit)
+}
+fact abstract'class'Vertex {
+	type'class'Vertex = type'class'Pseudostate + type'class'RegularState
+}
+fact abstract'class'Statechart {
+	type'class'Statechart = type'DefinedPartOf'class'Statechart + type'UndefinedPartOf'class'Statechart
+}
+fact abstract'class'RegularState {
+	type'class'RegularState = type'class'State + type'class'FinalState
+}
+fact abstract'class'CompositeElement {
+	type'class'CompositeElement = type'class'Statechart + (type'class'State + (type'DefinedPartOf'class'CompositeElement + type'UndefinedPartOf'class'CompositeElement))
+}
+fact abstract'DefinedPartOf'class'CompositeElement {
+	type'DefinedPartOf'class'CompositeElement = type'DefinedPartOf'class'Statechart
+}
+fact abstract'UndefinedPartOf'class'CompositeElement {
+	type'UndefinedPartOf'class'CompositeElement = type'UndefinedPartOf'class'Statechart + type'class'State
+}
+fact ObjectTypeDefinition {
+	util'Object = type'class'Vertex + (type'class'Region + (type'class'Transition + type'class'CompositeElement))
+}
+fact common'types'class'Region'class'Vertex {
+	type'class'Region & type'class'Vertex = none
+}
+fact common'types'class'Transition'class'Vertex {
+	type'class'Transition & type'class'Vertex = none
+}
+fact common'types'class'Transition'class'Region {
+	type'class'Transition & type'class'Region = none
+}
+fact common'types'class'CompositeElement'class'Vertex {
+	type'class'CompositeElement & type'class'Vertex = type'class'State
+}
+fact common'types'class'CompositeElement'class'Region {
+	type'class'CompositeElement & type'class'Region = none
+}
+fact common'types'class'CompositeElement'class'Transition {
+	type'class'CompositeElement & type'class'Transition = none
+}
+fact common'types'class'Choice'class'Entry {
+	type'class'Choice & type'class'Entry = none
+}
+fact common'types'class'Exit'class'Entry {
+	type'class'Exit & type'class'Entry = none
+}
+fact common'types'class'Exit'class'Choice {
+	type'class'Exit & type'class'Choice = none
+}
+fact common'types'class'RegularState'class'Pseudostate {
+	type'class'RegularState & type'class'Pseudostate = none
+}
+fact common'types'UndefinedPartOf'class'Statechart'DefinedPartOf'class'Statechart {
+	type'UndefinedPartOf'class'Statechart & type'DefinedPartOf'class'Statechart = none
+}
+fact common'types'class'FinalState'class'State {
+	type'class'FinalState & type'class'State = none
+}
+fact common'types'class'State'class'Statechart {
+	type'class'State & type'class'Statechart = none
+}
+fact common'types'DefinedPartOf'class'CompositeElement'class'Statechart {
+	type'DefinedPartOf'class'CompositeElement & type'class'Statechart = type'DefinedPartOf'class'Statechart
+}
+fact common'types'DefinedPartOf'class'CompositeElement'class'State {
+	type'DefinedPartOf'class'CompositeElement & type'class'State = none
+}
+fact common'types'UndefinedPartOf'class'CompositeElement'class'Statechart {
+	type'UndefinedPartOf'class'CompositeElement & type'class'Statechart = type'UndefinedPartOf'class'Statechart
+}
+fact common'types'UndefinedPartOf'class'CompositeElement'class'State {
+	type'UndefinedPartOf'class'CompositeElement & type'class'State = type'class'State
+}
+fact common'types'UndefinedPartOf'class'CompositeElement'DefinedPartOf'class'CompositeElement {
+	type'UndefinedPartOf'class'CompositeElement & type'DefinedPartOf'class'CompositeElement = none
+}
+fact common'types'class'State'UndefinedPartOf'class'Statechart {
+	type'class'State & type'UndefinedPartOf'class'Statechart = none
+}
+fact util'containmentDefinition {
+	util'language.util'contains = inreference'outgoingTransitions'Vertex + (inreference'vertices'Region + inreference'regions'CompositeElement)
+}
+fact util'noParentForRoot {
+	no parent: type'class'Pseudostate + (type'class'FinalState + (type'class'Choice + (type'class'Statechart + (type'class'Transition + (type'class'Vertex + (type'class'Exit + (type'class'Region + (type'class'Entry + (type'class'State + (type'class'RegularState + type'class'CompositeElement)))))))))) { parent->(util'language.util'root) in util'language.util'contains }
+}
+fact util'atLeastOneParent {
+	all child: type'class'Pseudostate + (type'class'FinalState + (type'class'Choice + (type'class'Statechart + (type'class'Transition + (type'class'Vertex + (type'class'Exit + (type'class'Region + (type'class'Entry + (type'class'State + (type'class'RegularState + type'class'CompositeElement)))))))))) { child = util'language.util'root || (some parent: type'class'Pseudostate + (type'class'FinalState + (type'class'Choice + (type'class'Statechart + (type'class'Transition + (type'class'Vertex + (type'class'Exit + (type'class'Region + (type'class'Entry + (type'class'State + (type'class'RegularState + type'class'CompositeElement)))))))))) { parent->child in util'language.util'contains }) }
+}
+fact util'noCircularContainment {
+	no circle: type'class'Pseudostate + (type'class'FinalState + (type'class'Choice + (type'class'Statechart + (type'class'Transition + (type'class'Vertex + (type'class'Exit + (type'class'Region + (type'class'Entry + (type'class'State + (type'class'RegularState + type'class'CompositeElement)))))))))) { circle->circle in ^ (util'language.util'contains) }
+}
+fact oppositeReference'incomingTransitions'Vertex {
+	inreference'incomingTransitions'Vertex = ~ inreference'target'Transition
+}
+fact oppositeReference'outgoingTransitions'Vertex {
+	inreference'outgoingTransitions'Vertex = ~ inreference'source'Transition
+}
+run { } for exactly 50 util'Object , 0 Int

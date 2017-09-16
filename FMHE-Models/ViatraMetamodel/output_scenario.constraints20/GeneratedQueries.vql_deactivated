@@ -1,0 +1,931 @@
+import epackage "http://www.bme.hu/mit/inf/dslreasoner/viatrasolver/partialinterpretationlanguage"
+import epackage "http://www.bme.hu/mit/inf/dslreasoner/logic/model/problem"
+import epackage "http://www.bme.hu/mit/inf/dslreasoner/logic/model/language"
+
+//////////
+// 0. Util
+//////////
+private pattern interpretation(problem:LogicProblem, interpetation:PartialInterpretation) {
+	PartialInterpretation.problem(interpetation,problem);
+}
+	
+/////////////////////////
+// 0.1 Existance
+/////////////////////////
+private pattern mustExist(problem:LogicProblem, interpetation:PartialInterpretation, element:DefinedElement) {
+	find interpretation(problem,interpetation);
+	LogicProblem.elements(problem,element);
+} or {
+	find interpretation(problem,interpetation);
+	PartialInterpretation.newElements(interpetation,element);
+} 
+
+private pattern mayExist(problem:LogicProblem, interpetation:PartialInterpretation, element:DefinedElement) {
+    find mustExist(problem,interpetation,element);
+} or {
+    find interpretation(problem,interpetation);
+    neg find closeWorld(interpetation);
+    PartialInterpretation.openWorldElementPrototype(interpetation,element);
+}
+
+private pattern closeWorld(interpetation:PartialInterpretation) {
+    PartialInterpretation.maxNewElements(interpetation,0);
+}
+
+////////////////////////
+// 0.2 Equivalence
+////////////////////////
+pattern mayEquivalent(problem:LogicProblem, interpretation:PartialInterpretation, a: DefinedElement, b: DefinedElement) {
+	find mayExist(problem,interpretation,a);
+	find mayExist(problem,interpretation,b);
+	a == b;
+}
+
+////////////////////////
+// 0.3 Required Patterns by TypeIndexer
+////////////////////////
+private pattern typeInterpretation(problem:LogicProblem, interpetation:PartialInterpretation, type:TypeDeclaration, typeInterpretation:PartialTypeInterpratation) {
+	find interpretation(problem,interpetation);
+	LogicProblem.types(problem,type);
+	PartialInterpretation.partialtypeinterpratation(interpetation,typeInterpretation);
+	PartialTypeInterpratation.interpretationOf(typeInterpretation,type);
+}
+
+private pattern directInstanceOf(problem:LogicProblem, interpetation:PartialInterpretation, element:DefinedElement, type:Type) {
+	find interpretation(problem,interpetation);
+	LogicProblem.types(problem,type);
+	TypeDefinition.elements(type,element);
+} or {
+	find interpretation(problem,interpetation);
+	find typeInterpretation(problem,interpetation,type,typeInterpretation);
+	PartialTypeInterpratation.elements(typeInterpretation,element);
+}
+
+//////////
+// 1. Problem-Specific Base Indexers
+//////////
+// 1.1 Type Indexers
+//////////
+/**
+ * An element must be an instance of type "class Pseudostate".
+ */
+private pattern mustInstanceOfclass_Pseudostate(problem:LogicProblem, interpretation:PartialInterpretation, element:DefinedElement) {
+	Type.name(type,"class Pseudostate");
+	find directInstanceOf(problem,interpretation,element,type);
+}
+/**
+ * An element may be an instance of type "class Pseudostate".
+ */
+private pattern mayInstanceOfclass_Pseudostate(problem:LogicProblem, interpretation:PartialInterpretation, element:DefinedElement)
+{
+	find interpretation(problem,interpretation);
+	PartialInterpretation.newElements(interpretation,element);
+	neg find mustInstanceOfclass_Exit(problem,interpretation,element);
+	neg find mustInstanceOfclass_RegularState(problem,interpretation,element);
+	neg find mustInstanceOfclass_Region(problem,interpretation,element);
+	neg find mustInstanceOfclass_Entry(problem,interpretation,element);
+	neg find mustInstanceOfclass_Transition(problem,interpretation,element);
+	neg find mustInstanceOfclass_Choice(problem,interpretation,element);
+	neg find mustInstanceOfclass_CompositeElement(problem,interpretation,element);
+} or {
+	find interpretation(problem,interpretation);
+	PartialInterpretation.openWorldElementPrototype(interpetation,element);
+} or
+{ find mustInstanceOfclass_Pseudostate(problem,interpretation,element); }
+/**
+ * An element must be an instance of type "class Vertex".
+ */
+private pattern mustInstanceOfclass_Vertex(problem:LogicProblem, interpretation:PartialInterpretation, element:DefinedElement) {
+	Type.name(type,"class Vertex");
+	find directInstanceOf(problem,interpretation,element,type);
+}
+/**
+ * An element may be an instance of type "class Vertex".
+ */
+private pattern mayInstanceOfclass_Vertex(problem:LogicProblem, interpretation:PartialInterpretation, element:DefinedElement)
+{
+	find interpretation(problem,interpretation);
+	PartialInterpretation.newElements(interpretation,element);
+	neg find mustInstanceOfclass_RegularState(problem,interpretation,element);
+	neg find mustInstanceOfclass_Region(problem,interpretation,element);
+	neg find mustInstanceOfclass_Pseudostate(problem,interpretation,element);
+	neg find mustInstanceOfclass_Transition(problem,interpretation,element);
+	neg find mustInstanceOfclass_CompositeElement(problem,interpretation,element);
+} or {
+	find interpretation(problem,interpretation);
+	PartialInterpretation.openWorldElementPrototype(interpetation,element);
+} or
+{ find mustInstanceOfclass_Vertex(problem,interpretation,element); }
+/**
+ * An element must be an instance of type "class Region".
+ */
+private pattern mustInstanceOfclass_Region(problem:LogicProblem, interpretation:PartialInterpretation, element:DefinedElement) {
+	Type.name(type,"class Region");
+	find directInstanceOf(problem,interpretation,element,type);
+}
+/**
+ * An element may be an instance of type "class Region".
+ */
+private pattern mayInstanceOfclass_Region(problem:LogicProblem, interpretation:PartialInterpretation, element:DefinedElement)
+{
+	find interpretation(problem,interpretation);
+	PartialInterpretation.newElements(interpretation,element);
+	neg find mustInstanceOfclass_Transition(problem,interpretation,element);
+	neg find mustInstanceOfclass_Vertex(problem,interpretation,element);
+	neg find mustInstanceOfclass_CompositeElement(problem,interpretation,element);
+} or {
+	find interpretation(problem,interpretation);
+	PartialInterpretation.openWorldElementPrototype(interpetation,element);
+} or
+{ find mustInstanceOfclass_Region(problem,interpretation,element); }
+/**
+ * An element must be an instance of type "class Transition".
+ */
+private pattern mustInstanceOfclass_Transition(problem:LogicProblem, interpretation:PartialInterpretation, element:DefinedElement) {
+	Type.name(type,"class Transition");
+	find directInstanceOf(problem,interpretation,element,type);
+}
+/**
+ * An element may be an instance of type "class Transition".
+ */
+private pattern mayInstanceOfclass_Transition(problem:LogicProblem, interpretation:PartialInterpretation, element:DefinedElement)
+{
+	find interpretation(problem,interpretation);
+	PartialInterpretation.newElements(interpretation,element);
+	neg find mustInstanceOfclass_Region(problem,interpretation,element);
+	neg find mustInstanceOfclass_CompositeElement(problem,interpretation,element);
+	neg find mustInstanceOfclass_Vertex(problem,interpretation,element);
+} or {
+	find interpretation(problem,interpretation);
+	PartialInterpretation.openWorldElementPrototype(interpetation,element);
+} or
+{ find mustInstanceOfclass_Transition(problem,interpretation,element); }
+/**
+ * An element must be an instance of type "class Statechart".
+ */
+private pattern mustInstanceOfclass_Statechart(problem:LogicProblem, interpretation:PartialInterpretation, element:DefinedElement) {
+	Type.name(type,"class Statechart");
+	find directInstanceOf(problem,interpretation,element,type);
+}
+/**
+ * An element may be an instance of type "class Statechart".
+ */
+private pattern mayInstanceOfclass_Statechart(problem:LogicProblem, interpretation:PartialInterpretation, element:DefinedElement)
+{
+	find interpretation(problem,interpretation);
+	PartialInterpretation.newElements(interpretation,element);
+	neg find mustInstanceOfUndefinedPartOf_class_CompositeElement(problem,interpretation,element);
+	neg find mustInstanceOfclass_Region(problem,interpretation,element);
+	neg find mustInstanceOfclass_Transition(problem,interpretation,element);
+	neg find mustInstanceOfclass_Vertex(problem,interpretation,element);
+} or {
+	find interpretation(problem,interpretation);
+	PartialInterpretation.openWorldElementPrototype(interpetation,element);
+} or
+{ find mustInstanceOfclass_Statechart(problem,interpretation,element); }
+/**
+ * An element must be an instance of type "class Entry".
+ */
+private pattern mustInstanceOfclass_Entry(problem:LogicProblem, interpretation:PartialInterpretation, element:DefinedElement) {
+	Type.name(type,"class Entry");
+	find directInstanceOf(problem,interpretation,element,type);
+}
+/**
+ * An element may be an instance of type "class Entry".
+ */
+private pattern mayInstanceOfclass_Entry(problem:LogicProblem, interpretation:PartialInterpretation, element:DefinedElement)
+{
+	find interpretation(problem,interpretation);
+	PartialInterpretation.newElements(interpretation,element);
+	neg find mustInstanceOfclass_Exit(problem,interpretation,element);
+	neg find mustInstanceOfclass_RegularState(problem,interpretation,element);
+	neg find mustInstanceOfclass_Region(problem,interpretation,element);
+	neg find mustInstanceOfclass_Transition(problem,interpretation,element);
+	neg find mustInstanceOfclass_CompositeElement(problem,interpretation,element);
+	neg find mustInstanceOfclass_Choice(problem,interpretation,element);
+} or {
+	find interpretation(problem,interpretation);
+	PartialInterpretation.openWorldElementPrototype(interpetation,element);
+} or
+{ find mustInstanceOfclass_Entry(problem,interpretation,element); }
+/**
+ * An element must be an instance of type "class State".
+ */
+private pattern mustInstanceOfclass_State(problem:LogicProblem, interpretation:PartialInterpretation, element:DefinedElement) {
+	Type.name(type,"class State");
+	find directInstanceOf(problem,interpretation,element,type);
+}
+/**
+ * An element may be an instance of type "class State".
+ */
+private pattern mayInstanceOfclass_State(problem:LogicProblem, interpretation:PartialInterpretation, element:DefinedElement)
+{
+	find interpretation(problem,interpretation);
+	PartialInterpretation.newElements(interpretation,element);
+	neg find mustInstanceOfclass_Region(problem,interpretation,element);
+	neg find mustInstanceOfclass_FinalState(problem,interpretation,element);
+	neg find mustInstanceOfclass_Statechart(problem,interpretation,element);
+	neg find mustInstanceOfclass_Pseudostate(problem,interpretation,element);
+	neg find mustInstanceOfclass_Transition(problem,interpretation,element);
+} or {
+	find interpretation(problem,interpretation);
+	PartialInterpretation.openWorldElementPrototype(interpetation,element);
+} or
+{ find mustInstanceOfclass_State(problem,interpretation,element); }
+/**
+ * An element must be an instance of type "class RegularState".
+ */
+private pattern mustInstanceOfclass_RegularState(problem:LogicProblem, interpretation:PartialInterpretation, element:DefinedElement) {
+	Type.name(type,"class RegularState");
+	find directInstanceOf(problem,interpretation,element,type);
+}
+/**
+ * An element may be an instance of type "class RegularState".
+ */
+private pattern mayInstanceOfclass_RegularState(problem:LogicProblem, interpretation:PartialInterpretation, element:DefinedElement)
+{
+	find interpretation(problem,interpretation);
+	PartialInterpretation.newElements(interpretation,element);
+	neg find mustInstanceOfclass_FinalState(problem,interpretation,element);
+	neg find mustInstanceOfclass_Region(problem,interpretation,element);
+	neg find mustInstanceOfclass_Pseudostate(problem,interpretation,element);
+	neg find mustInstanceOfclass_Transition(problem,interpretation,element);
+	neg find mustInstanceOfclass_CompositeElement(problem,interpretation,element);
+} or {
+	find interpretation(problem,interpretation);
+	PartialInterpretation.openWorldElementPrototype(interpetation,element);
+} or
+{ find mustInstanceOfclass_RegularState(problem,interpretation,element); }
+/**
+ * An element must be an instance of type "class CompositeElement".
+ */
+private pattern mustInstanceOfclass_CompositeElement(problem:LogicProblem, interpretation:PartialInterpretation, element:DefinedElement) {
+	Type.name(type,"class CompositeElement");
+	find directInstanceOf(problem,interpretation,element,type);
+}
+/**
+ * An element may be an instance of type "class CompositeElement".
+ */
+private pattern mayInstanceOfclass_CompositeElement(problem:LogicProblem, interpretation:PartialInterpretation, element:DefinedElement)
+{
+	find interpretation(problem,interpretation);
+	PartialInterpretation.newElements(interpretation,element);
+	neg find mustInstanceOfUndefinedPartOf_class_CompositeElement(problem,interpretation,element);
+	neg find mustInstanceOfclass_Region(problem,interpretation,element);
+	neg find mustInstanceOfclass_Statechart(problem,interpretation,element);
+	neg find mustInstanceOfclass_Transition(problem,interpretation,element);
+	neg find mustInstanceOfclass_Vertex(problem,interpretation,element);
+} or {
+	find interpretation(problem,interpretation);
+	PartialInterpretation.openWorldElementPrototype(interpetation,element);
+} or
+{ find mustInstanceOfclass_CompositeElement(problem,interpretation,element); }
+/**
+ * An element must be an instance of type "class Choice".
+ */
+private pattern mustInstanceOfclass_Choice(problem:LogicProblem, interpretation:PartialInterpretation, element:DefinedElement) {
+	Type.name(type,"class Choice");
+	find directInstanceOf(problem,interpretation,element,type);
+}
+/**
+ * An element may be an instance of type "class Choice".
+ */
+private pattern mayInstanceOfclass_Choice(problem:LogicProblem, interpretation:PartialInterpretation, element:DefinedElement)
+{
+	find interpretation(problem,interpretation);
+	PartialInterpretation.newElements(interpretation,element);
+	neg find mustInstanceOfclass_Exit(problem,interpretation,element);
+	neg find mustInstanceOfclass_RegularState(problem,interpretation,element);
+	neg find mustInstanceOfclass_Region(problem,interpretation,element);
+	neg find mustInstanceOfclass_Entry(problem,interpretation,element);
+	neg find mustInstanceOfclass_Transition(problem,interpretation,element);
+	neg find mustInstanceOfclass_CompositeElement(problem,interpretation,element);
+} or {
+	find interpretation(problem,interpretation);
+	PartialInterpretation.openWorldElementPrototype(interpetation,element);
+} or
+{ find mustInstanceOfclass_Choice(problem,interpretation,element); }
+/**
+ * An element must be an instance of type "class Exit".
+ */
+private pattern mustInstanceOfclass_Exit(problem:LogicProblem, interpretation:PartialInterpretation, element:DefinedElement) {
+	Type.name(type,"class Exit");
+	find directInstanceOf(problem,interpretation,element,type);
+}
+/**
+ * An element may be an instance of type "class Exit".
+ */
+private pattern mayInstanceOfclass_Exit(problem:LogicProblem, interpretation:PartialInterpretation, element:DefinedElement)
+{
+	find interpretation(problem,interpretation);
+	PartialInterpretation.newElements(interpretation,element);
+	neg find mustInstanceOfclass_RegularState(problem,interpretation,element);
+	neg find mustInstanceOfclass_Region(problem,interpretation,element);
+	neg find mustInstanceOfclass_Entry(problem,interpretation,element);
+	neg find mustInstanceOfclass_Transition(problem,interpretation,element);
+	neg find mustInstanceOfclass_CompositeElement(problem,interpretation,element);
+	neg find mustInstanceOfclass_Choice(problem,interpretation,element);
+} or {
+	find interpretation(problem,interpretation);
+	PartialInterpretation.openWorldElementPrototype(interpetation,element);
+} or
+{ find mustInstanceOfclass_Exit(problem,interpretation,element); }
+/**
+ * An element must be an instance of type "class FinalState".
+ */
+private pattern mustInstanceOfclass_FinalState(problem:LogicProblem, interpretation:PartialInterpretation, element:DefinedElement) {
+	Type.name(type,"class FinalState");
+	find directInstanceOf(problem,interpretation,element,type);
+}
+/**
+ * An element may be an instance of type "class FinalState".
+ */
+private pattern mayInstanceOfclass_FinalState(problem:LogicProblem, interpretation:PartialInterpretation, element:DefinedElement)
+{
+	find interpretation(problem,interpretation);
+	PartialInterpretation.newElements(interpretation,element);
+	neg find mustInstanceOfclass_Region(problem,interpretation,element);
+	neg find mustInstanceOfclass_Pseudostate(problem,interpretation,element);
+	neg find mustInstanceOfclass_Transition(problem,interpretation,element);
+	neg find mustInstanceOfclass_CompositeElement(problem,interpretation,element);
+} or {
+	find interpretation(problem,interpretation);
+	PartialInterpretation.openWorldElementPrototype(interpetation,element);
+} or
+{ find mustInstanceOfclass_FinalState(problem,interpretation,element); }
+/**
+ * An element must be an instance of type "DefinedPartOf class Statechart".
+ */
+private pattern mustInstanceOfDefinedPartOf_class_Statechart(problem:LogicProblem, interpretation:PartialInterpretation, element:DefinedElement) {
+	Type.name(type,"DefinedPartOf class Statechart");
+	find directInstanceOf(problem,interpretation,element,type);
+}
+/**
+ * An element may be an instance of type "DefinedPartOf class Statechart".
+ */
+private pattern mayInstanceOfDefinedPartOf_class_Statechart(problem:LogicProblem, interpretation:PartialInterpretation, element:DefinedElement)
+{ find mustInstanceOfDefinedPartOf_class_Statechart(problem,interpretation,element); }
+/**
+ * An element must be an instance of type "UndefinedPartOf class Statechart".
+ */
+private pattern mustInstanceOfUndefinedPartOf_class_Statechart(problem:LogicProblem, interpretation:PartialInterpretation, element:DefinedElement) {
+	Type.name(type,"UndefinedPartOf class Statechart");
+	find directInstanceOf(problem,interpretation,element,type);
+}
+/**
+ * An element may be an instance of type "UndefinedPartOf class Statechart".
+ */
+private pattern mayInstanceOfUndefinedPartOf_class_Statechart(problem:LogicProblem, interpretation:PartialInterpretation, element:DefinedElement)
+{
+	find interpretation(problem,interpretation);
+	PartialInterpretation.newElements(interpretation,element);
+	neg find mustInstanceOfclass_Region(problem,interpretation,element);
+	neg find mustInstanceOfclass_Transition(problem,interpretation,element);
+	neg find mustInstanceOfclass_Vertex(problem,interpretation,element);
+} or {
+	find interpretation(problem,interpretation);
+	PartialInterpretation.openWorldElementPrototype(interpetation,element);
+} or
+{ find mustInstanceOfUndefinedPartOf_class_Statechart(problem,interpretation,element); }
+/**
+ * An element must be an instance of type "DefinedPartOf class CompositeElement".
+ */
+private pattern mustInstanceOfDefinedPartOf_class_CompositeElement(problem:LogicProblem, interpretation:PartialInterpretation, element:DefinedElement) {
+	Type.name(type,"DefinedPartOf class CompositeElement");
+	find directInstanceOf(problem,interpretation,element,type);
+}
+/**
+ * An element may be an instance of type "DefinedPartOf class CompositeElement".
+ */
+private pattern mayInstanceOfDefinedPartOf_class_CompositeElement(problem:LogicProblem, interpretation:PartialInterpretation, element:DefinedElement)
+{ find mustInstanceOfDefinedPartOf_class_CompositeElement(problem,interpretation,element); }
+/**
+ * An element must be an instance of type "UndefinedPartOf class CompositeElement".
+ */
+private pattern mustInstanceOfUndefinedPartOf_class_CompositeElement(problem:LogicProblem, interpretation:PartialInterpretation, element:DefinedElement) {
+	Type.name(type,"UndefinedPartOf class CompositeElement");
+	find directInstanceOf(problem,interpretation,element,type);
+}
+/**
+ * An element may be an instance of type "UndefinedPartOf class CompositeElement".
+ */
+private pattern mayInstanceOfUndefinedPartOf_class_CompositeElement(problem:LogicProblem, interpretation:PartialInterpretation, element:DefinedElement)
+{
+	find interpretation(problem,interpretation);
+	PartialInterpretation.newElements(interpretation,element);
+	neg find mustInstanceOfclass_Statechart(problem,interpretation,element);
+	neg find mustInstanceOfclass_Region(problem,interpretation,element);
+	neg find mustInstanceOfclass_Transition(problem,interpretation,element);
+	neg find mustInstanceOfclass_Vertex(problem,interpretation,element);
+} or {
+	find interpretation(problem,interpretation);
+	PartialInterpretation.openWorldElementPrototype(interpetation,element);
+} or
+{ find mustInstanceOfUndefinedPartOf_class_CompositeElement(problem,interpretation,element); }
+
+//////////
+// 1.2 Relation Declaration Indexers
+//////////
+/**
+ * Matcher for detecting tuples t where []inreference incomingTransitions Vertex(source,target)
+ */
+private pattern mustInRelationinreference_incomingTransitions_Vertex(
+	problem:LogicProblem, interpretation:PartialInterpretation,
+	source: DefinedElement, target:DefinedElement)
+{
+	find interpretation(problem,interpretation);
+	PartialInterpretation.partialrelationinterpretation(interpretation,relationIterpretation);
+	PartialRelationInterpretation.interpretationOf.name(relationIterpretation,"inreference incomingTransitions Vertex");
+	PartialRelationInterpretation.relationlinks(relationIterpretation,link);
+	BinaryElementRelationLink.param1(link,source);
+	BinaryElementRelationLink.param2(link,target);
+}
+/**
+ * Matcher for detecting tuples t where <>inreference incomingTransitions Vertex(source,target)
+ */
+private pattern mayInRelationinreference_incomingTransitions_Vertex(
+	problem:LogicProblem, interpretation:PartialInterpretation,
+	source: DefinedElement, target:DefinedElement)
+{
+	find interpretation(problem,interpretation);
+	// The two endpoint of the link have to exist
+	find mayExist(problem, interpretation, source);
+	find mayExist(problem, interpretation, target);
+	// Type consistency
+	find mayInstanceOfclass_Vertex(problem,interpretation,source);
+	find mayInstanceOfclass_Transition(problem,interpretation,target);
+	// There are "numberOfExistingReferences" currently existing instances of the reference to the target,
+	// the upper bound of the opposite reference multiplicity should be considered.
+	numberOfExistingOppositeReferences == count find mustInRelationinreference_target_Transition(problem,interpretation,target,_);
+	check(numberOfExistingOppositeReferences < 1);
+} or {
+	find mustInRelationinreference_incomingTransitions_Vertex(problem,interpretation,source,target);
+}
+/**
+ * Matcher for detecting tuples t where []inreference outgoingTransitions Vertex(source,target)
+ */
+private pattern mustInRelationinreference_outgoingTransitions_Vertex(
+	problem:LogicProblem, interpretation:PartialInterpretation,
+	source: DefinedElement, target:DefinedElement)
+{
+	find interpretation(problem,interpretation);
+	PartialInterpretation.partialrelationinterpretation(interpretation,relationIterpretation);
+	PartialRelationInterpretation.interpretationOf.name(relationIterpretation,"inreference outgoingTransitions Vertex");
+	PartialRelationInterpretation.relationlinks(relationIterpretation,link);
+	BinaryElementRelationLink.param1(link,source);
+	BinaryElementRelationLink.param2(link,target);
+}
+/**
+ * Matcher for detecting tuples t where <>inreference outgoingTransitions Vertex(source,target)
+ */
+private pattern mayInRelationinreference_outgoingTransitions_Vertex(
+	problem:LogicProblem, interpretation:PartialInterpretation,
+	source: DefinedElement, target:DefinedElement)
+{
+	find interpretation(problem,interpretation);
+	// The two endpoint of the link have to exist
+	find mayExist(problem, interpretation, source);
+	find mayExist(problem, interpretation, target);
+	// Type consistency
+	find mayInstanceOfclass_Vertex(problem,interpretation,source);
+	find mayInstanceOfclass_Transition(problem,interpretation,target);
+	// There are "numberOfExistingReferences" currently existing instances of the reference to the target,
+	// the upper bound of the opposite reference multiplicity should be considered.
+	numberOfExistingOppositeReferences == count find mustInRelationinreference_source_Transition(problem,interpretation,target,_);
+	check(numberOfExistingOppositeReferences < 1);
+	// The reference is containment, then a new reference cannot be create if:
+	// 1. Multiple parents
+	neg find mustContains4(problem,interpretation,_,target);
+	// 2. Circle in the containment hierarchy
+	neg find mustTransitiveContains(source,target);
+} or {
+	find mustInRelationinreference_outgoingTransitions_Vertex(problem,interpretation,source,target);
+}
+/**
+ * Matcher for detecting tuples t where []inreference vertices Region(source,target)
+ */
+private pattern mustInRelationinreference_vertices_Region(
+	problem:LogicProblem, interpretation:PartialInterpretation,
+	source: DefinedElement, target:DefinedElement)
+{
+	find interpretation(problem,interpretation);
+	PartialInterpretation.partialrelationinterpretation(interpretation,relationIterpretation);
+	PartialRelationInterpretation.interpretationOf.name(relationIterpretation,"inreference vertices Region");
+	PartialRelationInterpretation.relationlinks(relationIterpretation,link);
+	BinaryElementRelationLink.param1(link,source);
+	BinaryElementRelationLink.param2(link,target);
+}
+/**
+ * Matcher for detecting tuples t where <>inreference vertices Region(source,target)
+ */
+private pattern mayInRelationinreference_vertices_Region(
+	problem:LogicProblem, interpretation:PartialInterpretation,
+	source: DefinedElement, target:DefinedElement)
+{
+	find interpretation(problem,interpretation);
+	// The two endpoint of the link have to exist
+	find mayExist(problem, interpretation, source);
+	find mayExist(problem, interpretation, target);
+	// Type consistency
+	find mayInstanceOfclass_Region(problem,interpretation,source);
+	find mayInstanceOfclass_Vertex(problem,interpretation,target);
+	// The reference is containment, then a new reference cannot be create if:
+	// 1. Multiple parents
+	neg find mustContains4(problem,interpretation,_,target);
+	// 2. Circle in the containment hierarchy
+	neg find mustTransitiveContains(source,target);
+} or {
+	find mustInRelationinreference_vertices_Region(problem,interpretation,source,target);
+}
+/**
+ * Matcher for detecting tuples t where []inreference target Transition(source,target)
+ */
+private pattern mustInRelationinreference_target_Transition(
+	problem:LogicProblem, interpretation:PartialInterpretation,
+	source: DefinedElement, target:DefinedElement)
+{
+	find interpretation(problem,interpretation);
+	PartialInterpretation.partialrelationinterpretation(interpretation,relationIterpretation);
+	PartialRelationInterpretation.interpretationOf.name(relationIterpretation,"inreference target Transition");
+	PartialRelationInterpretation.relationlinks(relationIterpretation,link);
+	BinaryElementRelationLink.param1(link,source);
+	BinaryElementRelationLink.param2(link,target);
+}
+/**
+ * Matcher for detecting tuples t where <>inreference target Transition(source,target)
+ */
+private pattern mayInRelationinreference_target_Transition(
+	problem:LogicProblem, interpretation:PartialInterpretation,
+	source: DefinedElement, target:DefinedElement)
+{
+	find interpretation(problem,interpretation);
+	// The two endpoint of the link have to exist
+	find mayExist(problem, interpretation, source);
+	find mayExist(problem, interpretation, target);
+	// Type consistency
+	find mayInstanceOfclass_Transition(problem,interpretation,source);
+	find mayInstanceOfclass_Vertex(problem,interpretation,target);
+	// There are "numberOfExistingReferences" currently existing instances of the reference from the source,
+	// the upper bound of the multiplicity should be considered.
+	numberOfExistingReferences == count find mustInRelationinreference_target_Transition(problem,interpretation,source,_);
+	check(numberOfExistingReferences < 1);
+} or {
+	find mustInRelationinreference_target_Transition(problem,interpretation,source,target);
+}
+/**
+ * Matcher for detecting tuples t where []inreference source Transition(source,target)
+ */
+private pattern mustInRelationinreference_source_Transition(
+	problem:LogicProblem, interpretation:PartialInterpretation,
+	source: DefinedElement, target:DefinedElement)
+{
+	find interpretation(problem,interpretation);
+	PartialInterpretation.partialrelationinterpretation(interpretation,relationIterpretation);
+	PartialRelationInterpretation.interpretationOf.name(relationIterpretation,"inreference source Transition");
+	PartialRelationInterpretation.relationlinks(relationIterpretation,link);
+	BinaryElementRelationLink.param1(link,source);
+	BinaryElementRelationLink.param2(link,target);
+}
+/**
+ * Matcher for detecting tuples t where <>inreference source Transition(source,target)
+ */
+private pattern mayInRelationinreference_source_Transition(
+	problem:LogicProblem, interpretation:PartialInterpretation,
+	source: DefinedElement, target:DefinedElement)
+{
+	find interpretation(problem,interpretation);
+	// The two endpoint of the link have to exist
+	find mayExist(problem, interpretation, source);
+	find mayExist(problem, interpretation, target);
+	// Type consistency
+	find mayInstanceOfclass_Transition(problem,interpretation,source);
+	find mayInstanceOfclass_Vertex(problem,interpretation,target);
+	// There are "numberOfExistingReferences" currently existing instances of the reference from the source,
+	// the upper bound of the multiplicity should be considered.
+	numberOfExistingReferences == count find mustInRelationinreference_source_Transition(problem,interpretation,source,_);
+	check(numberOfExistingReferences < 1);
+	// The eOpposite of the reference is containment, then a referene cannot be created if
+	// 1. Multiple parents
+	neg find mustContains4(problem,interpretation,source,_);
+	// 2. Circle in the containment hierarchy
+	neg find mustTransitiveContains(source,target);
+} or {
+	find mustInRelationinreference_source_Transition(problem,interpretation,source,target);
+}
+/**
+ * Matcher for detecting tuples t where []inreference regions CompositeElement(source,target)
+ */
+private pattern mustInRelationinreference_regions_CompositeElement(
+	problem:LogicProblem, interpretation:PartialInterpretation,
+	source: DefinedElement, target:DefinedElement)
+{
+	find interpretation(problem,interpretation);
+	PartialInterpretation.partialrelationinterpretation(interpretation,relationIterpretation);
+	PartialRelationInterpretation.interpretationOf.name(relationIterpretation,"inreference regions CompositeElement");
+	PartialRelationInterpretation.relationlinks(relationIterpretation,link);
+	BinaryElementRelationLink.param1(link,source);
+	BinaryElementRelationLink.param2(link,target);
+}
+/**
+ * Matcher for detecting tuples t where <>inreference regions CompositeElement(source,target)
+ */
+private pattern mayInRelationinreference_regions_CompositeElement(
+	problem:LogicProblem, interpretation:PartialInterpretation,
+	source: DefinedElement, target:DefinedElement)
+{
+	find interpretation(problem,interpretation);
+	// The two endpoint of the link have to exist
+	find mayExist(problem, interpretation, source);
+	find mayExist(problem, interpretation, target);
+	// Type consistency
+	find mayInstanceOfclass_CompositeElement(problem,interpretation,source);
+	find mayInstanceOfclass_Region(problem,interpretation,target);
+	// The reference is containment, then a new reference cannot be create if:
+	// 1. Multiple parents
+	neg find mustContains4(problem,interpretation,_,target);
+	// 2. Circle in the containment hierarchy
+	neg find mustTransitiveContains(source,target);
+} or {
+	find mustInRelationinreference_regions_CompositeElement(problem,interpretation,source,target);
+}
+
+//////////
+// 1.3 Relation Definition Indexers
+//////////
+
+//////////
+// 1.4 Containment Indexer
+//////////
+private pattern mustContains2(source: DefinedElement, target: DefinedElement) {
+	find mustContains4(_,_,source,target);
+}
+	
+private pattern mustContains4(problem:LogicProblem, interpretation:PartialInterpretation,
+	source: DefinedElement, target: DefinedElement)
+	{ find mustInRelationinreference_outgoingTransitions_Vertex(problem,interpretation,source,target); }or
+	
+	{ find mustInRelationinreference_vertices_Region(problem,interpretation,source,target); }or
+	
+	{ find mustInRelationinreference_regions_CompositeElement(problem,interpretation,source,target); }
+
+private pattern mustTransitiveContains(source,target) {
+	find mustContains2+(source,target);
+}
+
+//////////
+// 2. Invalidation Indexers
+//////////
+// 2.1 Invalidated by WF Queries
+//////////
+
+//////////
+// 3. Unfinishedness Indexers
+//////////
+// 3.1 Unfinishedness Measured by Multiplicity
+//////////
+pattern unfinishedLowerMultiplicity_inreference_target_Transition(problem:LogicProblem, interpretation:PartialInterpretation, relationIterpretation:PartialRelationInterpretation, object:DefinedElement,missingMultiplicity) {
+	find interpretation(problem,interpretation);
+	PartialInterpretation.partialrelationinterpretation(interpretation,relationIterpretation);
+	PartialRelationInterpretation.interpretationOf.name(relationIterpretation,"inreference target Transition");
+	find mustInstanceOfclass_Transition(problem,interpretation,object);
+	numberOfExistingReferences == count find mustInRelationinreference_target_Transition(problem,interpretation,object,_);
+	check(numberOfExistingReferences < 1);
+	missingMultiplicity == eval(1-numberOfExistingReferences);
+}
+
+//////////
+// 3.2 Unfinishedness Measured by WF Queries
+//////////
+
+//////////
+// 4. Refinement Indexers
+//////////
+// 4.1 Object constructors
+//////////
+pattern createObject_class_Exit_by_inreference_vertices_Region(
+	problem:LogicProblem, interpretation:PartialInterpretation,
+	relationInterpretation:PartialRelationInterpretation, typeInterpretation:PartialTypeInterpratation,
+	container:DefinedElement)
+{
+	find interpretation(problem,interpretation);
+	PartialInterpretation.partialtypeinterpratation(interpretation,typeInterpretation);
+	PartialTypeInterpratation.interpretationOf.name(typeInterpretation,"class Exit");
+	PartialInterpretation.partialrelationinterpretation(interpretation,relationInterpretation);
+	PartialRelationInterpretation.interpretationOf.name(relationInterpretation,"inreference vertices Region");
+	find mustInstanceOfclass_Region(problem,interpretation,container);
+	find mayInstanceOfclass_Exit(problem,interpretation,newObject);
+	find mayInRelationinreference_vertices_Region(problem,interpretation,container,newObject);
+	find mustExist(problem, interpretation, container);
+	neg find mustExist(problem, interpretation, newObject);
+}
+pattern createObject_UndefinedPartOf_class_Statechart(
+	problem:LogicProblem, interpretation:PartialInterpretation,
+	typeInterpretation:PartialTypeInterpratation)
+{
+	find interpretation(problem,interpretation);
+	PartialInterpretation.partialtypeinterpratation(interpretation,typeInterpretation);
+	PartialTypeInterpratation.interpretationOf.name(type,"UndefinedPartOf class Statechart");
+	find mayInstanceOfUndefinedPartOf_class_Statechart(problem,interpretation,newObject);
+	find mayExist(problem, interpretation, newObject);
+	neg find mustExist(problem, interpretation, newObject);
+}
+pattern createObject_class_FinalState_by_inreference_vertices_Region(
+	problem:LogicProblem, interpretation:PartialInterpretation,
+	relationInterpretation:PartialRelationInterpretation, typeInterpretation:PartialTypeInterpratation,
+	container:DefinedElement)
+{
+	find interpretation(problem,interpretation);
+	PartialInterpretation.partialtypeinterpratation(interpretation,typeInterpretation);
+	PartialTypeInterpratation.interpretationOf.name(typeInterpretation,"class FinalState");
+	PartialInterpretation.partialrelationinterpretation(interpretation,relationInterpretation);
+	PartialRelationInterpretation.interpretationOf.name(relationInterpretation,"inreference vertices Region");
+	find mustInstanceOfclass_Region(problem,interpretation,container);
+	find mayInstanceOfclass_FinalState(problem,interpretation,newObject);
+	find mayInRelationinreference_vertices_Region(problem,interpretation,container,newObject);
+	find mustExist(problem, interpretation, container);
+	neg find mustExist(problem, interpretation, newObject);
+}
+pattern createObject_class_Region_by_inreference_regions_CompositeElement(
+	problem:LogicProblem, interpretation:PartialInterpretation,
+	relationInterpretation:PartialRelationInterpretation, typeInterpretation:PartialTypeInterpratation,
+	container:DefinedElement)
+{
+	find interpretation(problem,interpretation);
+	PartialInterpretation.partialtypeinterpratation(interpretation,typeInterpretation);
+	PartialTypeInterpratation.interpretationOf.name(typeInterpretation,"class Region");
+	PartialInterpretation.partialrelationinterpretation(interpretation,relationInterpretation);
+	PartialRelationInterpretation.interpretationOf.name(relationInterpretation,"inreference regions CompositeElement");
+	find mustInstanceOfclass_CompositeElement(problem,interpretation,container);
+	find mayInstanceOfclass_Region(problem,interpretation,newObject);
+	find mayInRelationinreference_regions_CompositeElement(problem,interpretation,container,newObject);
+	find mustExist(problem, interpretation, container);
+	neg find mustExist(problem, interpretation, newObject);
+}
+pattern createObject_class_Entry_by_inreference_vertices_Region(
+	problem:LogicProblem, interpretation:PartialInterpretation,
+	relationInterpretation:PartialRelationInterpretation, typeInterpretation:PartialTypeInterpratation,
+	container:DefinedElement)
+{
+	find interpretation(problem,interpretation);
+	PartialInterpretation.partialtypeinterpratation(interpretation,typeInterpretation);
+	PartialTypeInterpratation.interpretationOf.name(typeInterpretation,"class Entry");
+	PartialInterpretation.partialrelationinterpretation(interpretation,relationInterpretation);
+	PartialRelationInterpretation.interpretationOf.name(relationInterpretation,"inreference vertices Region");
+	find mustInstanceOfclass_Region(problem,interpretation,container);
+	find mayInstanceOfclass_Entry(problem,interpretation,newObject);
+	find mayInRelationinreference_vertices_Region(problem,interpretation,container,newObject);
+	find mustExist(problem, interpretation, container);
+	neg find mustExist(problem, interpretation, newObject);
+}
+pattern createObject_class_Transition_by_inreference_outgoingTransitions_Vertex_with_inreference_source_Transition(
+	problem:LogicProblem, interpretation:PartialInterpretation,
+	relationInterpretation:PartialRelationInterpretation, inverseInterpretation:PartialRelationInterpretation, typeInterpretation:PartialTypeInterpratation,
+	container:DefinedElement)
+{
+	find interpretation(problem,interpretation);
+	PartialInterpretation.partialtypeinterpratation(interpretation,typeInterpretation);
+	PartialTypeInterpratation.interpretationOf.name(typeInterpretation,"class Transition");
+	PartialInterpretation.partialrelationinterpretation(interpretation,relationInterpretation);
+	PartialRelationInterpretation.interpretationOf.name(relationInterpretation,"inreference outgoingTransitions Vertex");
+	PartialInterpretation.partialrelationinterpretation(interpretation,inverseInterpretation);
+	PartialRelationInterpretation.interpretationOf.name(inverseInterpretation,"inreference source Transition");
+	find mustInstanceOfclass_Vertex(problem,interpretation,container);
+	find mayInstanceOfclass_Transition(problem,interpretation,newObject);
+	find mayInRelationinreference_outgoingTransitions_Vertex(problem,interpretation,container,newObject);
+	find mustExist(problem, interpretation, container);
+	neg find mustExist(problem, interpretation, newObject);
+}
+pattern createObject_class_State_by_inreference_vertices_Region(
+	problem:LogicProblem, interpretation:PartialInterpretation,
+	relationInterpretation:PartialRelationInterpretation, typeInterpretation:PartialTypeInterpratation,
+	container:DefinedElement)
+{
+	find interpretation(problem,interpretation);
+	PartialInterpretation.partialtypeinterpratation(interpretation,typeInterpretation);
+	PartialTypeInterpratation.interpretationOf.name(typeInterpretation,"class State");
+	PartialInterpretation.partialrelationinterpretation(interpretation,relationInterpretation);
+	PartialRelationInterpretation.interpretationOf.name(relationInterpretation,"inreference vertices Region");
+	find mustInstanceOfclass_Region(problem,interpretation,container);
+	find mayInstanceOfclass_State(problem,interpretation,newObject);
+	find mayInRelationinreference_vertices_Region(problem,interpretation,container,newObject);
+	find mustExist(problem, interpretation, container);
+	neg find mustExist(problem, interpretation, newObject);
+}
+pattern createObject_class_Choice_by_inreference_vertices_Region(
+	problem:LogicProblem, interpretation:PartialInterpretation,
+	relationInterpretation:PartialRelationInterpretation, typeInterpretation:PartialTypeInterpratation,
+	container:DefinedElement)
+{
+	find interpretation(problem,interpretation);
+	PartialInterpretation.partialtypeinterpratation(interpretation,typeInterpretation);
+	PartialTypeInterpratation.interpretationOf.name(typeInterpretation,"class Choice");
+	PartialInterpretation.partialrelationinterpretation(interpretation,relationInterpretation);
+	PartialRelationInterpretation.interpretationOf.name(relationInterpretation,"inreference vertices Region");
+	find mustInstanceOfclass_Region(problem,interpretation,container);
+	find mayInstanceOfclass_Choice(problem,interpretation,newObject);
+	find mayInRelationinreference_vertices_Region(problem,interpretation,container,newObject);
+	find mustExist(problem, interpretation, container);
+	neg find mustExist(problem, interpretation, newObject);
+}
+
+//////////
+// 4.2 Type refinement
+//////////
+pattern refineTypeTo_class_Exit(problem:LogicProblem, interpretation:PartialInterpretation, element: DefinedElement) {
+	find interpretation(problem,interpretation);
+	PartialInterpretation.newElements(interpretation,element);
+	neg find mustInstanceOfclass_Exit(problem,interpretation,element);
+	neg find mustInstanceOfclass_RegularState(problem,interpretation,element);
+	neg find mustInstanceOfclass_Region(problem,interpretation,element);
+	neg find mustInstanceOfclass_Entry(problem,interpretation,element);
+	neg find mustInstanceOfclass_Transition(problem,interpretation,element);
+	neg find mustInstanceOfclass_CompositeElement(problem,interpretation,element);
+	neg find mustInstanceOfclass_Choice(problem,interpretation,element);
+}
+pattern refineTypeTo_UndefinedPartOf_class_Statechart(problem:LogicProblem, interpretation:PartialInterpretation, element: DefinedElement) {
+	find interpretation(problem,interpretation);
+	PartialInterpretation.newElements(interpretation,element);
+	neg find mustInstanceOfUndefinedPartOf_class_Statechart(problem,interpretation,element);
+	neg find mustInstanceOfclass_Region(problem,interpretation,element);
+	neg find mustInstanceOfclass_Transition(problem,interpretation,element);
+	neg find mustInstanceOfclass_Vertex(problem,interpretation,element);
+}
+pattern refineTypeTo_class_FinalState(problem:LogicProblem, interpretation:PartialInterpretation, element: DefinedElement) {
+	find interpretation(problem,interpretation);
+	PartialInterpretation.newElements(interpretation,element);
+	neg find mustInstanceOfclass_FinalState(problem,interpretation,element);
+	neg find mustInstanceOfclass_Region(problem,interpretation,element);
+	neg find mustInstanceOfclass_Pseudostate(problem,interpretation,element);
+	neg find mustInstanceOfclass_Transition(problem,interpretation,element);
+	neg find mustInstanceOfclass_CompositeElement(problem,interpretation,element);
+}
+pattern refineTypeTo_class_Region(problem:LogicProblem, interpretation:PartialInterpretation, element: DefinedElement) {
+	find interpretation(problem,interpretation);
+	PartialInterpretation.newElements(interpretation,element);
+	neg find mustInstanceOfclass_Region(problem,interpretation,element);
+	neg find mustInstanceOfclass_Transition(problem,interpretation,element);
+	neg find mustInstanceOfclass_Vertex(problem,interpretation,element);
+	neg find mustInstanceOfclass_CompositeElement(problem,interpretation,element);
+}
+pattern refineTypeTo_class_Entry(problem:LogicProblem, interpretation:PartialInterpretation, element: DefinedElement) {
+	find interpretation(problem,interpretation);
+	PartialInterpretation.newElements(interpretation,element);
+	neg find mustInstanceOfclass_Exit(problem,interpretation,element);
+	neg find mustInstanceOfclass_RegularState(problem,interpretation,element);
+	neg find mustInstanceOfclass_Region(problem,interpretation,element);
+	neg find mustInstanceOfclass_Entry(problem,interpretation,element);
+	neg find mustInstanceOfclass_Transition(problem,interpretation,element);
+	neg find mustInstanceOfclass_CompositeElement(problem,interpretation,element);
+	neg find mustInstanceOfclass_Choice(problem,interpretation,element);
+}
+pattern refineTypeTo_class_Transition(problem:LogicProblem, interpretation:PartialInterpretation, element: DefinedElement) {
+	find interpretation(problem,interpretation);
+	PartialInterpretation.newElements(interpretation,element);
+	neg find mustInstanceOfclass_Region(problem,interpretation,element);
+	neg find mustInstanceOfclass_Transition(problem,interpretation,element);
+	neg find mustInstanceOfclass_CompositeElement(problem,interpretation,element);
+	neg find mustInstanceOfclass_Vertex(problem,interpretation,element);
+}
+pattern refineTypeTo_class_State(problem:LogicProblem, interpretation:PartialInterpretation, element: DefinedElement) {
+	find interpretation(problem,interpretation);
+	PartialInterpretation.newElements(interpretation,element);
+	neg find mustInstanceOfclass_Region(problem,interpretation,element);
+	neg find mustInstanceOfclass_FinalState(problem,interpretation,element);
+	neg find mustInstanceOfclass_Statechart(problem,interpretation,element);
+	neg find mustInstanceOfclass_Pseudostate(problem,interpretation,element);
+	neg find mustInstanceOfclass_Transition(problem,interpretation,element);
+	neg find mustInstanceOfclass_State(problem,interpretation,element);
+}
+pattern refineTypeTo_class_Choice(problem:LogicProblem, interpretation:PartialInterpretation, element: DefinedElement) {
+	find interpretation(problem,interpretation);
+	PartialInterpretation.newElements(interpretation,element);
+	neg find mustInstanceOfclass_Exit(problem,interpretation,element);
+	neg find mustInstanceOfclass_RegularState(problem,interpretation,element);
+	neg find mustInstanceOfclass_Region(problem,interpretation,element);
+	neg find mustInstanceOfclass_Entry(problem,interpretation,element);
+	neg find mustInstanceOfclass_Transition(problem,interpretation,element);
+	neg find mustInstanceOfclass_Choice(problem,interpretation,element);
+	neg find mustInstanceOfclass_CompositeElement(problem,interpretation,element);
+}
+
+//////////
+// 4.3 Relation refinement
+//////////
+pattern refineRelation_inreference_incomingTransitions_Vertex_and_inreference_target_Transition(
+	problem:LogicProblem, interpretation:PartialInterpretation,
+	relationIterpretation:PartialRelationInterpretation, oppositeInterpretation:PartialRelationInterpretation,
+	from: DefinedElement, to: DefinedElement)
+{
+	find interpretation(problem,interpretation);
+	PartialInterpretation.partialrelationinterpretation(interpretation,relationIterpretation);
+	PartialRelationInterpretation.interpretationOf.name(relationIterpretation,"inreference incomingTransitions Vertex");
+	PartialInterpretation.partialrelationinterpretation(interpretation,oppositeInterpretation);
+	PartialRelationInterpretation.interpretationOf.name(oppositeInterpretation,"inreference target Transition");
+	find mustExist(problem, interpretation, from);
+	find mustExist(problem, interpretation, to);
+	find mustInstanceOfclass_Vertex(problem,interpretation,from);
+	find mustInstanceOfclass_Transition(problem,interpretation,to);
+	find mayInRelationinreference_incomingTransitions_Vertex(problem,interpretation,from,to);
+	neg find mustInRelationinreference_incomingTransitions_Vertex(problem,interpretation,from,to);
+}
+

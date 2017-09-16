@@ -1,0 +1,236 @@
+one sig util'language {
+	util'root : one type'class'Pseudostate + (type'class'FinalState + (type'class'Choice + (type'class'Statechart + (type'class'Transition + (type'class'Vertex + (type'class'Exit + (type'class'Region + (type'class'Entry + (type'class'State + (type'class'RegularState + type'class'CompositeElement)))))))))),
+	util'contains : (type'class'Pseudostate + (type'class'FinalState + (type'class'Choice + (type'class'Statechart + (type'class'Transition + (type'class'Vertex + (type'class'Exit + (type'class'Region + (type'class'Entry + (type'class'State + (type'class'RegularState + type'class'CompositeElement))))))))))) lone->set (type'class'Pseudostate + (type'class'FinalState + (type'class'Choice + (type'class'Statechart + (type'class'Transition + (type'class'Vertex + (type'class'Exit + (type'class'Region + (type'class'Entry + (type'class'State + (type'class'RegularState + type'class'CompositeElement)))))))))))
+}
+abstract sig util'Object {
+}
+sig type'class'Pseudostate in type'class'Vertex {
+}
+sig type'class'Vertex in util'Object {
+	inreference'incomingTransitions'Vertex : set type'class'Transition,
+	inreference'outgoingTransitions'Vertex : set type'class'Transition
+}
+sig type'class'Region in util'Object {
+	inreference'vertices'Region : set type'class'Vertex
+}
+sig type'class'Transition in util'Object {
+	inreference'target'Transition : one type'class'Vertex,
+	inreference'source'Transition : lone type'class'Vertex
+}
+sig type'class'Statechart in type'class'CompositeElement {
+}
+sig type'class'Entry in type'class'Pseudostate {
+}
+sig type'class'State in type'class'RegularState + type'class'CompositeElement + type'UndefinedPartOf'class'CompositeElement {
+}
+sig type'class'RegularState in type'class'Vertex {
+}
+sig type'class'CompositeElement in util'Object {
+	inreference'regions'CompositeElement : set type'class'Region
+}
+sig type'class'Choice in type'class'Pseudostate {
+}
+sig type'class'Exit in type'class'Pseudostate {
+}
+sig type'class'FinalState in type'class'RegularState {
+}
+sig type'DefinedPartOf'class'Statechart in type'class'Statechart + type'DefinedPartOf'class'CompositeElement {
+}
+sig type'UndefinedPartOf'class'Statechart in type'class'Statechart + type'UndefinedPartOf'class'CompositeElement {
+}
+sig type'DefinedPartOf'class'CompositeElement in type'class'CompositeElement {
+}
+sig type'UndefinedPartOf'class'CompositeElement in type'class'CompositeElement {
+}
+one sig element'DefinedElement'1 in type'DefinedPartOf'class'CompositeElement {
+}
+pred pattern'hu'bme'mit'inf'dslreasoner'partialsnapshot_mavo'yakindu'child [parameter'parent: type'class'CompositeElement, parameter'child: type'class'Vertex] {
+	some variable'virtual0: type'class'Region { variable'virtual0 in parameter'parent.inreference'regions'CompositeElement && parameter'child in variable'virtual0.inreference'vertices'Region }
+}
+pred pattern'hu'bme'mit'inf'dslreasoner'partialsnapshot_mavo'yakindu'StateInRegion [parameter'region: type'class'Region, parameter'state: type'class'State] {
+	parameter'state in type'class'State && parameter'state in parameter'region.inreference'vertices'Region
+}
+pred pattern'hu'bme'mit'inf'dslreasoner'partialsnapshot_mavo'yakindu'noStateInRegion [parameter'region: type'class'Region] {
+	all variable'0: type'class'State { parameter'region in type'class'Region && ! (pattern'hu'bme'mit'inf'dslreasoner'partialsnapshot_mavo'yakindu'StateInRegion [ parameter'region , variable'0 ]) }
+}
+pred pattern'hu'bme'mit'inf'dslreasoner'partialsnapshot_mavo'yakindu'choiceHasNoIncoming [parameter'c: type'class'Choice] {
+	all variable'0: type'class'Transition, variable'1: type'class'Vertex { parameter'c in type'class'Choice && ! (pattern'hu'bme'mit'inf'dslreasoner'partialsnapshot_mavo'yakindu'transition [ variable'0 , variable'1 , parameter'c ]) }
+}
+pred pattern'hu'bme'mit'inf'dslreasoner'partialsnapshot_mavo'yakindu'incomingToEntry [parameter't: type'class'Transition, parameter'e: type'class'Entry] {
+	some variable'0: type'class'Vertex { parameter'e in type'class'Entry && pattern'hu'bme'mit'inf'dslreasoner'partialsnapshot_mavo'yakindu'transition [ parameter't , variable'0 , parameter'e ] }
+}
+pred pattern'hu'bme'mit'inf'dslreasoner'partialsnapshot_mavo'yakindu'noOutgoingTransitionFromEntry [parameter'e: type'class'Entry] {
+	all variable'0: type'class'Transition, variable'1: type'class'Vertex { parameter'e in type'class'Entry && ! (pattern'hu'bme'mit'inf'dslreasoner'partialsnapshot_mavo'yakindu'transition [ variable'0 , parameter'e , variable'1 ]) }
+}
+pred pattern'hu'bme'mit'inf'dslreasoner'partialsnapshot_mavo'yakindu'hasMultipleRegions [parameter'composite: type'class'CompositeElement] {
+	some variable'region1: type'class'Region, variable'region2: type'class'Region { variable'region1 in parameter'composite.inreference'regions'CompositeElement && (variable'region2 in parameter'composite.inreference'regions'CompositeElement && variable'region1 != variable'region2) }
+}
+pred pattern'hu'bme'mit'inf'dslreasoner'partialsnapshot_mavo'yakindu'entryInRegion [parameter'r1: type'class'Region, parameter'e1: type'class'Entry] {
+	parameter'e1 in type'class'Entry && parameter'e1 in parameter'r1.inreference'vertices'Region
+}
+pred pattern'hu'bme'mit'inf'dslreasoner'partialsnapshot_mavo'yakindu'choiceHasNoOutgoing [parameter'c: type'class'Choice] {
+	all variable'0: type'class'Transition, variable'1: type'class'Vertex { parameter'c in type'class'Choice && ! (pattern'hu'bme'mit'inf'dslreasoner'partialsnapshot_mavo'yakindu'transition [ variable'0 , parameter'c , variable'1 ]) }
+}
+pred pattern'hu'bme'mit'inf'dslreasoner'partialsnapshot_mavo'yakindu'outgoingFromExit [parameter't: type'class'Transition, parameter'e: type'class'Exit] {
+	parameter'e in type'class'Exit && parameter't in parameter'e.inreference'outgoingTransitions'Vertex
+}
+pred pattern'hu'bme'mit'inf'dslreasoner'partialsnapshot_mavo'yakindu'outgoingFromFinal [parameter't: type'class'Transition, parameter'f: type'class'FinalState] {
+	parameter'f in type'class'FinalState && parameter't in parameter'f.inreference'outgoingTransitions'Vertex
+}
+pred pattern'hu'bme'mit'inf'dslreasoner'partialsnapshot_mavo'yakindu'noEntryInRegion [parameter'r1: type'class'Region] {
+	all variable'0: type'class'Entry { parameter'r1 in type'class'Region && ! (pattern'hu'bme'mit'inf'dslreasoner'partialsnapshot_mavo'yakindu'entryInRegion [ parameter'r1 , variable'0 ]) }
+}
+pred pattern'hu'bme'mit'inf'dslreasoner'partialsnapshot_mavo'yakindu'transition [parameter't: type'class'Transition, parameter'src: type'class'Vertex, parameter'trg: type'class'Vertex] {
+	parameter'trg in type'class'Vertex && (parameter'src in parameter't.inreference'source'Transition && parameter'trg in parameter't.inreference'target'Transition)
+}
+pred pattern'hu'bme'mit'inf'dslreasoner'partialsnapshot_mavo'yakindu'multipleTransitionFromEntry [parameter'e: type'class'Entry, parameter't1: type'class'Transition, parameter't2: type'class'Transition] {
+	parameter't1 in parameter'e.inreference'outgoingTransitions'Vertex && (parameter'e in type'class'Entry && (parameter't2 in parameter'e.inreference'outgoingTransitions'Vertex && parameter't1 != parameter't2))
+}
+pred pattern'hu'bme'mit'inf'dslreasoner'partialsnapshot_mavo'yakindu'multipleEntryInRegion [parameter'r: type'class'Region] {
+	some variable'e1: type'class'Entry, variable'e2: type'class'Entry { pattern'hu'bme'mit'inf'dslreasoner'partialsnapshot_mavo'yakindu'entryInRegion [ parameter'r , variable'e1 ] && (pattern'hu'bme'mit'inf'dslreasoner'partialsnapshot_mavo'yakindu'entryInRegion [ parameter'r , variable'e2 ] && variable'e1 != variable'e2) }
+}
+fact typedefinition'DefinedPartOf'class'Statechart {
+	type'DefinedPartOf'class'Statechart = element'DefinedElement'1
+}
+fact typedefinition'DefinedPartOf'class'CompositeElement {
+	type'DefinedPartOf'class'CompositeElement = element'DefinedElement'1
+}
+fact abstract'class'State {
+	type'class'State = type'class'RegularState & (type'class'CompositeElement & type'UndefinedPartOf'class'CompositeElement)
+}
+fact abstract'DefinedPartOf'class'Statechart {
+	type'DefinedPartOf'class'Statechart = type'class'Statechart & type'DefinedPartOf'class'CompositeElement
+}
+fact abstract'UndefinedPartOf'class'Statechart {
+	type'UndefinedPartOf'class'Statechart = type'class'Statechart & type'UndefinedPartOf'class'CompositeElement
+}
+fact abstract'class'Pseudostate {
+	type'class'Pseudostate = type'class'Entry + (type'class'Choice + type'class'Exit)
+}
+fact abstract'class'Vertex {
+	type'class'Vertex = type'class'Pseudostate + type'class'RegularState
+}
+fact abstract'class'Statechart {
+	type'class'Statechart = type'DefinedPartOf'class'Statechart + type'UndefinedPartOf'class'Statechart
+}
+fact abstract'class'RegularState {
+	type'class'RegularState = type'class'State + type'class'FinalState
+}
+fact abstract'class'CompositeElement {
+	type'class'CompositeElement = type'class'Statechart + (type'class'State + (type'DefinedPartOf'class'CompositeElement + type'UndefinedPartOf'class'CompositeElement))
+}
+fact abstract'DefinedPartOf'class'CompositeElement {
+	type'DefinedPartOf'class'CompositeElement = type'DefinedPartOf'class'Statechart
+}
+fact abstract'UndefinedPartOf'class'CompositeElement {
+	type'UndefinedPartOf'class'CompositeElement = type'UndefinedPartOf'class'Statechart + type'class'State
+}
+fact ObjectTypeDefinition {
+	util'Object = type'class'Vertex + (type'class'Region + (type'class'Transition + type'class'CompositeElement))
+}
+fact common'types'class'Region'class'Vertex {
+	type'class'Region & type'class'Vertex = none
+}
+fact common'types'class'Transition'class'Vertex {
+	type'class'Transition & type'class'Vertex = none
+}
+fact common'types'class'Transition'class'Region {
+	type'class'Transition & type'class'Region = none
+}
+fact common'types'class'CompositeElement'class'Vertex {
+	type'class'CompositeElement & type'class'Vertex = type'class'State
+}
+fact common'types'class'CompositeElement'class'Region {
+	type'class'CompositeElement & type'class'Region = none
+}
+fact common'types'class'CompositeElement'class'Transition {
+	type'class'CompositeElement & type'class'Transition = none
+}
+fact common'types'class'Choice'class'Entry {
+	type'class'Choice & type'class'Entry = none
+}
+fact common'types'class'Exit'class'Entry {
+	type'class'Exit & type'class'Entry = none
+}
+fact common'types'class'Exit'class'Choice {
+	type'class'Exit & type'class'Choice = none
+}
+fact common'types'class'RegularState'class'Pseudostate {
+	type'class'RegularState & type'class'Pseudostate = none
+}
+fact common'types'UndefinedPartOf'class'Statechart'DefinedPartOf'class'Statechart {
+	type'UndefinedPartOf'class'Statechart & type'DefinedPartOf'class'Statechart = none
+}
+fact common'types'class'FinalState'class'State {
+	type'class'FinalState & type'class'State = none
+}
+fact common'types'class'State'class'Statechart {
+	type'class'State & type'class'Statechart = none
+}
+fact common'types'DefinedPartOf'class'CompositeElement'class'Statechart {
+	type'DefinedPartOf'class'CompositeElement & type'class'Statechart = type'DefinedPartOf'class'Statechart
+}
+fact common'types'DefinedPartOf'class'CompositeElement'class'State {
+	type'DefinedPartOf'class'CompositeElement & type'class'State = none
+}
+fact common'types'UndefinedPartOf'class'CompositeElement'class'Statechart {
+	type'UndefinedPartOf'class'CompositeElement & type'class'Statechart = type'UndefinedPartOf'class'Statechart
+}
+fact common'types'UndefinedPartOf'class'CompositeElement'class'State {
+	type'UndefinedPartOf'class'CompositeElement & type'class'State = type'class'State
+}
+fact common'types'UndefinedPartOf'class'CompositeElement'DefinedPartOf'class'CompositeElement {
+	type'UndefinedPartOf'class'CompositeElement & type'DefinedPartOf'class'CompositeElement = none
+}
+fact common'types'class'State'UndefinedPartOf'class'Statechart {
+	type'class'State & type'UndefinedPartOf'class'Statechart = none
+}
+fact util'containmentDefinition {
+	util'language.util'contains = inreference'outgoingTransitions'Vertex + (inreference'vertices'Region + inreference'regions'CompositeElement)
+}
+fact util'noParentForRoot {
+	no parent: type'class'Pseudostate + (type'class'FinalState + (type'class'Choice + (type'class'Statechart + (type'class'Transition + (type'class'Vertex + (type'class'Exit + (type'class'Region + (type'class'Entry + (type'class'State + (type'class'RegularState + type'class'CompositeElement)))))))))) { parent->(util'language.util'root) in util'language.util'contains }
+}
+fact util'atLeastOneParent {
+	all child: type'class'Pseudostate + (type'class'FinalState + (type'class'Choice + (type'class'Statechart + (type'class'Transition + (type'class'Vertex + (type'class'Exit + (type'class'Region + (type'class'Entry + (type'class'State + (type'class'RegularState + type'class'CompositeElement)))))))))) { child = util'language.util'root || (some parent: type'class'Pseudostate + (type'class'FinalState + (type'class'Choice + (type'class'Statechart + (type'class'Transition + (type'class'Vertex + (type'class'Exit + (type'class'Region + (type'class'Entry + (type'class'State + (type'class'RegularState + type'class'CompositeElement)))))))))) { parent->child in util'language.util'contains }) }
+}
+fact util'noCircularContainment {
+	no circle: type'class'Pseudostate + (type'class'FinalState + (type'class'Choice + (type'class'Statechart + (type'class'Transition + (type'class'Vertex + (type'class'Exit + (type'class'Region + (type'class'Entry + (type'class'State + (type'class'RegularState + type'class'CompositeElement)))))))))) { circle->circle in ^ (util'language.util'contains) }
+}
+fact oppositeReference'incomingTransitions'Vertex {
+	inreference'incomingTransitions'Vertex = ~ inreference'target'Transition
+}
+fact oppositeReference'outgoingTransitions'Vertex {
+	inreference'outgoingTransitions'Vertex = ~ inreference'source'Transition
+}
+fact errorpattern'hu'bme'mit'inf'dslreasoner'partialsnapshot_mavo'yakindu'noStateInRegion {
+	all region: type'class'Region { ! (pattern'hu'bme'mit'inf'dslreasoner'partialsnapshot_mavo'yakindu'noStateInRegion [ region ]) }
+}
+fact errorpattern'hu'bme'mit'inf'dslreasoner'partialsnapshot_mavo'yakindu'choiceHasNoIncoming {
+	all c: type'class'Choice { ! (pattern'hu'bme'mit'inf'dslreasoner'partialsnapshot_mavo'yakindu'choiceHasNoIncoming [ c ]) }
+}
+fact errorpattern'hu'bme'mit'inf'dslreasoner'partialsnapshot_mavo'yakindu'incomingToEntry {
+	all t: type'class'Transition, e: type'class'Entry { ! (pattern'hu'bme'mit'inf'dslreasoner'partialsnapshot_mavo'yakindu'incomingToEntry [ t , e ]) }
+}
+fact errorpattern'hu'bme'mit'inf'dslreasoner'partialsnapshot_mavo'yakindu'noOutgoingTransitionFromEntry {
+	all e: type'class'Entry { ! (pattern'hu'bme'mit'inf'dslreasoner'partialsnapshot_mavo'yakindu'noOutgoingTransitionFromEntry [ e ]) }
+}
+fact errorpattern'hu'bme'mit'inf'dslreasoner'partialsnapshot_mavo'yakindu'choiceHasNoOutgoing {
+	all c: type'class'Choice { ! (pattern'hu'bme'mit'inf'dslreasoner'partialsnapshot_mavo'yakindu'choiceHasNoOutgoing [ c ]) }
+}
+fact errorpattern'hu'bme'mit'inf'dslreasoner'partialsnapshot_mavo'yakindu'outgoingFromExit {
+	all t: type'class'Transition, e: type'class'Exit { ! (pattern'hu'bme'mit'inf'dslreasoner'partialsnapshot_mavo'yakindu'outgoingFromExit [ t , e ]) }
+}
+fact errorpattern'hu'bme'mit'inf'dslreasoner'partialsnapshot_mavo'yakindu'outgoingFromFinal {
+	all t: type'class'Transition, f: type'class'FinalState { ! (pattern'hu'bme'mit'inf'dslreasoner'partialsnapshot_mavo'yakindu'outgoingFromFinal [ t , f ]) }
+}
+fact errorpattern'hu'bme'mit'inf'dslreasoner'partialsnapshot_mavo'yakindu'noEntryInRegion {
+	all r1: type'class'Region { ! (pattern'hu'bme'mit'inf'dslreasoner'partialsnapshot_mavo'yakindu'noEntryInRegion [ r1 ]) }
+}
+fact errorpattern'hu'bme'mit'inf'dslreasoner'partialsnapshot_mavo'yakindu'multipleTransitionFromEntry {
+	all e: type'class'Entry, t1: type'class'Transition, t2: type'class'Transition { ! (pattern'hu'bme'mit'inf'dslreasoner'partialsnapshot_mavo'yakindu'multipleTransitionFromEntry [ e , t1 , t2 ]) }
+}
+fact errorpattern'hu'bme'mit'inf'dslreasoner'partialsnapshot_mavo'yakindu'multipleEntryInRegion {
+	all r: type'class'Region { ! (pattern'hu'bme'mit'inf'dslreasoner'partialsnapshot_mavo'yakindu'multipleEntryInRegion [ r ]) }
+}
+run { } for exactly 50 util'Object , 0 Int
